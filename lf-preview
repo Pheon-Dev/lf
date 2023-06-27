@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 bats() {
-  bat -pp --color always "$@"
+  bat --color=always --theme="Dracula" --style="numbers,changes,header" "$@"
 }
 preview() {
 	bats <<-EOF | paste -sd '' >"$LF_UEBERZUG_TEMPDIR/fifo"
