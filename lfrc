@@ -9,23 +9,23 @@ set icons true
 # Custom Functions
 cmd create_dir ${{
   echo -e ""
-  echo -n "$(tput setaf 3) Enter Directory Name  : "
-  read ans
-  mkdir -p $ans
+  echo -n "$(tput setaf 3) Enter Directory Name  :"
+  echo -n "$(tput setaf 4) "
+  read dirs
+  for dir in $dirs; do
+    mkdir -p $dir
+  done
   clear
 }}
 
 cmd create_file ${{
   echo -e ""
-  echo -n "$(tput setaf 3) Enter File Name  : "
-  read ans
-  touch $ans
-  echo -e ""
-  echo -n "$(tput setaf 4) Edit file [y|n]  : "
-  read res
-  if [ "$res" = "y" || "$res" = "Y" || "$res" = "yes" || "$res" = "Yes" ]; then
-    $EDITOR $ans
-  fi
+  echo -n "$(tput setaf 3) Enter File Name  :"
+  echo -n "$(tput setaf 4) "
+  read files
+  for file in $files; do
+    touch $file
+  done
   clear
 }}
 
@@ -39,6 +39,7 @@ cmd delete ${{
     echo -n "$(tput setaf 1)  Are you sure you want to delete"
     echo -n "$(tput setaf 3) $del"
     echo -n "$(tput setaf 1) [y|n] : "
+  echo -n "$(tput setaf 4) "
     read res
     if [[ $res == "y" || $res == "Y" || $res == "yes" || $res == "Yes" ]]; then
       rm -rf $del
@@ -94,7 +95,7 @@ cmd restore_trash ${{
 map d
 map m
 
-map au unarchive
+map u unarchive
 
 # Basic Functions
 map . set hidden!
@@ -105,16 +106,16 @@ map x cut
 map y copy
 map <enter> open
 map R reload
-map mf create_file
-map md create_dir
+map a create_file
+map A create_dir
 map dd delete
 map C clear
 
 # Movement
 map gr cd ~/rust
 map go cd ~/go
-map gD cd ~/Documents
-map gd cd ~/Downloads
-map gc cd ~/.config
+map gc cd ~/Documents
+map gw cd ~/Downloads
+map gf cd ~/.config
 map gs cd ~/.local/bin
 map gt cd ~/.local/share/Trash/files
