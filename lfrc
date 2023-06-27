@@ -37,7 +37,7 @@ cmd delete ${{
     del=$(basename "$file")
     echo -e ""
     echo -n "$(tput setaf 1)  Are you sure you want to delete"
-    echo -n "$(tput setaf 3)  $del"
+    echo -n "$(tput setaf 3) $del"
     echo -n "$(tput setaf 1) [y|n] : "
     read res
     if [[ $res == "y" || $res == "Y" || $res == "yes" || $res == "Yes" ]]; then
