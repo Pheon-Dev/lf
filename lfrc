@@ -44,10 +44,10 @@ cmd delete ${{
     if [[ $res == "y" || $res == "Y" || $res == "yes" || $res == "Yes" ]]; then
       rm -rf $del
       clear
-      exit 1
+      return 127
     fi
-      clear
-    exit 1
+    clear
+    return 127 # nonzero retcode required for lf previews to reload
   done
 }}
 
