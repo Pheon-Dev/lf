@@ -51,8 +51,9 @@ cmd delete ${{
   done
 }}
 
+    # cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
 cmd fzf_jump ${{
-    res="$(find . -maxdepth 1 | fzf --preview 'bat --color=always --style=numbers --theme=Dracula --line-range=:500 {}' --preview-window=top --header='Jump to location')"
+    res="$(find . -maxdepth 1 | fzf --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (exa --icons -T --color=always --group-directories-first {} || tree -C {})) || echo {} 2> /dev/null | head -200' --preview-window=top --header='Jump to location')"
     if [ -n "$res" ]; then
         if [ -d "$res" ]; then
             cmd="cd"
