@@ -6,7 +6,14 @@ set hidden true
 set ignorecase true
 set icons true
 
-# Custom Functions
+# set nodrawbox
+# set nohidden
+set info size
+set scrolloff 99
+set ifs "\n"
+set filesep "\n"
+set errorfmt "\033[31m%s\033[0m"
+
 cmd create_dir ${{
   echo -e ""
   echo -n "$(tput setaf 3) Enter Directory Name  :"
@@ -39,7 +46,7 @@ cmd delete ${{
     echo -n "$(tput setaf 1)  Are you sure you want to delete"
     echo -n "$(tput setaf 3) $del"
     echo -n "$(tput setaf 1) [y|n] : "
-  echo -n "$(tput setaf 4) "
+    echo -n "$(tput setaf 4) "
     read res
     if [[ $res == "y" || $res == "Y" || $res == "yes" || $res == "Yes" ]]; then
       rm -rf $del
@@ -51,10 +58,14 @@ cmd delete ${{
   done
 }}
 
-    # cd)           fzf "$@" --preview 'tree -C {} | head -200' ;;
+cmd edit ${{
+  files=$(printf "$fx" | tr '\n' ';')
+  nvim --server ~/.cache/nvim/server.pipe --remote $files
+}}
+
 cmd fzf_jump ${{
     FZF_DEFAULT_OPTS='--color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4'
-    res="$(find . -maxdepth 1 | fzf --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (exa --icons -T --color=always --group-directories-first {} || tree -C {})) || echo {} 2> /dev/null | head -200' --preview-window=top --header='Jump to location' --prompt '  ' $FZF_DEFAULT_OPTS --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')"
+    res="$(find . -maxdepth 1 | fzf --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (exa --icons -T --color=always --group-directories-first {} || tree -C {})) || echo {} 2> /dev/null | head -200' --preview-window=top --header='Jump to location' --prompt '  ' --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')"
     if [ -n "$res" ]; then
         if [ -d "$res" ]; then
             cmd="cd"
@@ -78,7 +89,6 @@ cmd fzf_search ${{
             --prompt '  ' \
             --preview 'bat --color=always {1} --highlight-line {2}' \
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-            ${FZF_DEFAULT_OPTS} \
           | cut -d':' -f1 | sed 's/\\/\\\\/g;s/"/\\"/g'
     )"
     if [ -n "$res" ]; then
@@ -125,6 +135,7 @@ map a create_file
 map A create_dir
 map d delete
 map C clear
+map e edit
 map S fzf_search
 
 # Movement
