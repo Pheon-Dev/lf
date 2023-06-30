@@ -63,6 +63,10 @@ cmd edit ${{
   nvim --server ~/.cache/nvim/server.pipe --remote $files
 }}
 
+cmd lazy ${{
+  lazygit
+}}
+
 cmd fzf_jump ${{
     FZF_DEFAULT_OPTS='--color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4'
     res="$(find . -maxdepth 1 | fzf --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (exa --icons -T --color=always --group-directories-first {} || tree -C {})) || echo {} 2> /dev/null | head -200' --preview-window=top --header='Jump to location' --prompt '  ' --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')"
@@ -136,6 +140,7 @@ map A create_dir
 map d delete
 map C clear
 map e edit
+map l lazy
 map S fzf_search
 
 # Movement
@@ -143,6 +148,15 @@ map gr cd ~/rust
 map go cd ~/go
 map gc cd ~/Documents
 map gw cd ~/Downloads
-map gf cd ~/.config
+map gfg cd ~/.config
+map gfj cd ~/.config/zellij
+map gff cd ~/.config/flamingo
+map gfa cd ~/.config/alacritty
+map gfd cd ~/.config/dwm
+map gfh cd ~/.config/zsh
+map gfl cd ~/.config/lf
+map gfn cd ~/.config/nvim
+map gfo cd ~/.config/dotfiles
 map gz cd ~/.local/share/nvim/lazy
 map gw cd ~/.local/state/nvim/swap
+map gh cd ~/.cache/nvim
