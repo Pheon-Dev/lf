@@ -5,14 +5,25 @@ set cleaner ~/.config/lf/lf-clean
 set hidden true
 set ignorecase true
 set icons true
-
-# set nodrawbox
+set cursorpreviewfmt "\033[7;90m"
+set drawbox false
 # set nohidden
 set info size
 set scrolloff 99
 set ifs "\n"
 set filesep "\n"
 set errorfmt "\033[31m%s\033[0m"
+
+${{
+    w=$(tput cols)
+    if [ $w -le 80 ]; then
+        lf -remote "send $id set ratios 1:2"
+    elif [ $w -le 160 ]; then
+        lf -remote "send $id set ratios 1:2:3"
+    else
+        lf -remote "send $id set ratios 1:2:3:5"
+    fi
+}}
 
 cmd create_dir ${{
   echo -e ""
@@ -61,10 +72,6 @@ cmd delete ${{
 cmd edit ${{
   files=$(printf "$fx" | tr '\n' ';')
   nvim --server ~/.cache/nvim/server.pipe --remote $files
-}}
-
-cmd lazy ${{
-  lazygit
 }}
 
 cmd fzf_jump ${{
@@ -121,26 +128,47 @@ cmd unarchive ${{
   esac
 }}
 
+cmd edit-config ${{
+    $EDITOR ~/.config/lf/lfrc
+    lf -remote "send $id source ~/.config/lf/lfrc"
+}}
+
+cmd paste-async &{{
+    set -- $(cat ~/.local/share/lf/files)
+    mode="$1"
+    shift
+    case "$mode" in
+        copy) cp -rn -- "$@" .;;
+        move) mv -n -- "$@" .;;
+    esac
+    rm ~/.local/share/lf/files
+    lf -remote "send clear"
+}}
+
+cmd yank-path $printf '%s' "$fx" | xclip -i -selection clipboard
+
 # Bindings
+map J :updir; set dironly true; down; set dironly false; open
+map K :updir; set dironly true; up; set dironly false; open
 map d
 map m
-
 map u unarchive
 
 # Basic Functions
 map . set hidden!
 map p paste
+map P paste-async
 map f fzf_jump
 map x cut
 map y copy
+map Y :yank-path
 map <enter> open
 map R reload
 map a create_file
 map A create_dir
 map d delete
-map C clear
+map C edit-config
 map e edit
-map l lazy
 map S fzf_search
 
 # Movement
