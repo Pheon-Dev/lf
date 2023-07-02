@@ -18,10 +18,11 @@ ${{
     w=$(tput cols)
     if [ $w -le 80 ]; then
         lf -remote "send $id set ratios 1:2"
-    elif [ $w -le 160 ]; then
-        lf -remote "send $id set ratios 1:2:3"
+    # elif [ $w -le 160 ]; then
+        # lf -remote "send $id set ratios 1:2:3"
     else
-        lf -remote "send $id set ratios 1:2:3:5"
+    #     lf -remote "send $id set ratios 1:2:3:4"
+        lf -remote "send $id set ratios 1:2:3"
     fi
 }}
 
@@ -170,6 +171,7 @@ map d delete
 map C edit-config
 map e edit
 map S fzf_search
+map Z $lazygit
 
 # Movement
 map gr cd ~/rust
