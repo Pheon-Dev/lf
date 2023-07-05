@@ -27,6 +27,7 @@ ${{
 }}
 
 cmd create_dir ${{
+  clear
   echo -e ""
   echo -n "$(tput setaf 3) Enter Directory Name  :"
   echo -n "$(tput setaf 4) "
@@ -38,6 +39,7 @@ cmd create_dir ${{
 }}
 
 cmd create_file ${{
+  clear
   echo -e ""
   echo -n "$(tput setaf 3) Enter File Name  :"
   echo -n "$(tput setaf 4) "
@@ -49,6 +51,7 @@ cmd create_file ${{
 }}
 
 cmd delete ${{
+  clear
   files=$(printf "$fx" | tr '\n' ';')
   while [[ "$files" ]]; do
     file=${files%%;*}
@@ -71,6 +74,7 @@ cmd delete ${{
 }}
 
 cmd edit ${{
+  clear
   files=$(printf "$fx" | tr '\n' ';')
   nvim --server ~/.cache/nvim/server.pipe --remote $files
 }}
@@ -130,6 +134,7 @@ cmd unarchive ${{
 }}
 
 cmd edit-config ${{
+  clear
     $EDITOR ~/.config/lf/lfrc
     lf -remote "send $id source ~/.config/lf/lfrc"
 }}
@@ -169,15 +174,17 @@ map a create_file
 map A create_dir
 map d delete
 map C edit-config
-map e edit
+map i edit
 map S fzf_search
 map Z $lazygit
+map e $~/.config/lf/lf-preview $f | less -R
 
 # Movement
 map gr cd ~/rust
 map go cd ~/go
 map gc cd ~/Documents
 map gw cd ~/Downloads
+map gfm cd ~/rust/scene/manta-api
 map gfg cd ~/.config
 map gfj cd ~/.config/zellij
 map gff cd ~/.config/flamingo
