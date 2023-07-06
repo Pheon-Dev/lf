@@ -94,21 +94,21 @@ cmd fzf_jump ${{
       --delimiter : \
       --prompt '  ' \
       --bind 'alt-i:execute(cd {} && nvim || nvim {})' \
-      --bind 'ctrl-h:change-prompt(Directories> )+reload(fd --type directory --hidden --follow --exclude .git)' \
-      --bind 'ctrl-l:change-prompt(Files> )+reload(fd --type file --hidden --follow --exclude .git)'\
+      --bind 'ctrl-h:change-prompt( )+reload(fd --type directory --hidden --follow --exclude .git)' \
+      --bind 'ctrl-l:change-prompt( )+reload(fd --type file --hidden --follow --exclude .git)'\
       --color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a \
       --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 \
       --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 \
       --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4
     )"
   if [ -n "$res" ]; then
-    if [ -d "$res" ]; then
-        cmd="cd"
-    else
-        cmd="select"
-    fi
-    res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
-    lf -remote "send $id $cmd \"$res\""
+      if [ -d "$res" ]; then
+          cmd="cd"
+      else
+          cmd="select"
+      fi
+      res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
+      lf -remote "send $id $cmd \"$res\""
   fi
 }}
 
@@ -124,8 +124,8 @@ cmd fzf_search ${{
         --delimiter : \
         --prompt '  ' \
         --bind 'alt-i:execute(cd {} && nvim || nvim {})' \
-        --bind 'ctrl-h:change-prompt(Directories> )+reload(fd --type directory --hidden --follow --exclude .git)' \
-        --bind 'ctrl-l:change-prompt(Files> )+reload(fd --type file --hidden --follow --exclude .git)'\
+        --bind 'ctrl-h:change-prompt( )+reload(fd --type directory --hidden --follow --exclude .git)' \
+        --bind 'ctrl-l:change-prompt( )+reload(fd --type file --hidden --follow --exclude .git)'\
         --color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a \
         --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 \
         --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 \
@@ -199,10 +199,10 @@ map a create_file
 map A create_dir
 map d delete
 map C edit-config
-map i edit
+map e edit
 map S fzf_search
 map Z $lazygit
-map e $~/.config/lf/lf-preview $f | less -R
+map i $~/.config/lf/lf-preview $f | less -R
 
 # Movement
 map gr cd ~/rust
