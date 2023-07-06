@@ -80,36 +80,61 @@ cmd edit ${{
 }}
 
 cmd fzf_jump ${{
-    FZF_DEFAULT_OPTS='--color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4'
-    res="$(find . -maxdepth 1 | fzf --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (exa --icons -T --color=always --group-directories-first {} || tree -C {})) || echo {} 2> /dev/null | head -200' --preview-window=top --header='Jump to location' --prompt '  ' --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')"
-    if [ -n "$res" ]; then
-        if [ -d "$res" ]; then
-            cmd="cd"
-        else
-            cmd="select"
-        fi
-        res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
-        lf -remote "send $id $cmd \"$res\""
+  res="$(
+    fd -H --strip-cwd-prefix --follow --exclude '.git*'| fzf \
+      --preview '( \
+        [[ -f {} ]] && \
+          (bat --style=plain --color=always {} || cat {})) || \
+          ([[ -d {} ]] && \
+            (exa --icons -T --color=always --group-directories-first {} || tree -C {}) \
+          ) || \
+          echo {} 2> /dev/null | head -200' \
+      --preview-window 'up,60%,border,+{2}+3/3,~3' \
+      --ansi --header 'Search for a file or folder' \
+      --delimiter : \
+      --prompt '  ' \
+      --bind 'alt-i:execute(cd {} && nvim || nvim {})' \
+      --bind 'ctrl-h:change-prompt(Directories> )+reload(fd --type directory --hidden --follow --exclude .git)' \
+      --bind 'ctrl-l:change-prompt(Files> )+reload(fd --type file --hidden --follow --exclude .git)'\
+      --color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a \
+      --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 \
+      --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 \
+      --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4
+    )"
+  if [ -n "$res" ]; then
+    if [ -d "$res" ]; then
+        cmd="cd"
+    else
+        cmd="select"
     fi
+    res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    lf -remote "send $id $cmd \"$res\""
+  fi
 }}
 
 cmd fzf_search ${{
-    FZF_DEFAULT_OPTS='--color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4'
-    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
-    res="$(
-        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
-          fzf --bind "change:reload:$RG_PREFIX {q} || true" \
-            --ansi --header 'Search in files' \
-            --disabled --query "$INITIAL_QUERY" \
-            --delimiter : \
-            --prompt '  ' \
-            --preview 'bat --color=always {1} --highlight-line {2}' \
-            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-          | cut -d':' -f1 | sed 's/\\/\\\\/g;s/"/\\"/g'
-    )"
-    if [ -n "$res" ]; then
-      [ -n "$res" ] && lf -remote "send $id select \"$res\""
-    fi
+  RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+  res="$(
+    FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+      fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+        --disabled --query "$INITIAL_QUERY" \
+        --preview 'bat style=plain --color=always {1} --highlight-line {2}' \
+        --ansi --header 'Search for a matching text' \
+        --preview-window 'up,60%,border,+{2}+3/3,~3' \
+        --delimiter : \
+        --prompt '  ' \
+        --bind 'alt-i:execute(cd {} && nvim || nvim {})' \
+        --bind 'ctrl-h:change-prompt(Directories> )+reload(fd --type directory --hidden --follow --exclude .git)' \
+        --bind 'ctrl-l:change-prompt(Files> )+reload(fd --type file --hidden --follow --exclude .git)'\
+        --color=fg:#c0caf5,bg:#21222c,hl:#bd93f9,border:#44475a \
+        --color=fg+:#c0caf5,bg+:#21222c,hl+:#bd93f9 \
+        --color=info:#f1fa8c,prompt:#50fa7b,pointer:#ff79c6 \
+        --color=marker:#ff79c6,spinner:#f1fa8c,header:#6272a4 \
+      | cut -d':' -f1 | sed 's/\\/\\\\/g;s/"/\\"/g'
+  )"
+  if [ -n "$res" ]; then
+    [ -n "$res" ] && lf -remote "send $id select \"$res\""
+  fi
 }}
 
 # Archive bindings
