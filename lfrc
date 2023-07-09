@@ -80,8 +80,7 @@ cmd edit ${{
 }}
 
 cmd fzf_jump ${{
-  export IGNORE=.git*,.yarn,.rustup,go/pkg/mod/*,.cargo/*,.cache,/home/linuxbrew,node_modules,targets,Downloads/pouch
-  res="$(fd -H --strip-cwd-prefix --follow --exclude {$IGNORE} | fzf)"
+  res="$(fd -H --strip-cwd-prefix --follow --exclude {$IGNORE} | fzf --bind 'ctrl-l:accept' --border 'none')"
   if [ -n "$res" ]; then
       if [ -d "$res" ]; then
           cmd="cd"
@@ -99,6 +98,8 @@ cmd fzf_search ${{
     FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
       fzf --bind "change:reload:$RG_PREFIX {q} || true" \
         --disabled --query "$INITIAL_QUERY" \
+        --bind 'ctrl-l:accept' \
+        --border 'none' \
         --preview 'bat style=plain --color=always {1} --highlight-line {2}' \
       | cut -d':' -f1 | sed 's/\\/\\\\/g;s/"/\\"/g'
   )"
