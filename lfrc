@@ -80,7 +80,15 @@ cmd edit ${{
 }}
 
 cmd fzf_jump ${{
-  res="$(fd -H --strip-cwd-prefix --follow --exclude {$IGNORE} | fzf --bind 'ctrl-l:accept' --border 'none')"
+  res="$(\
+    fd -H \
+      --strip-cwd-prefix \
+      --follow \
+      --exclude {$IGNORE} \
+        | fzf \
+          --bind 'ctrl-l:accept' \
+          --border 'none'
+  )"
   if [ -n "$res" ]; then
       if [ -d "$res" ]; then
           cmd="cd"
