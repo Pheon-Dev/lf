@@ -182,6 +182,17 @@ cmd paste-async &{{
     lf -remote "send clear"
 }}
 
+# Dragon
+cmd dragon %~/Documents/dragon/dragon -a -x $fx
+cmd dragon-stay %~/Documents/dragon/dragon -a $fx
+cmd dragon-individual %~/Documents/dragon/dragon $fx
+# cmd cpdragon %cpdragon
+# cmd mvdragon %mvdragon
+# cmd dlfile %dlfile
+map drr dragon
+map drs dragon
+map dri dragon
+
 cmd yank-path $printf '%s' "$fx" | xclip -i -selection clipboard
 
 # Bindings
@@ -203,7 +214,7 @@ map <enter> open
 map R reload
 map a create_file
 map A create_dir
-map d delete
+map dd delete
 map C edit-config
 map e edit
 map S fzf_search
@@ -228,3 +239,4 @@ map gfo cd ~/.config/dotfiles
 map gz cd ~/.local/share/nvim/lazy
 map gw cd ~/.local/state/nvim/swap
 map gh cd ~/.cache/nvim
+
