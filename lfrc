@@ -42,7 +42,14 @@ set info size
 set ifs "\n"
 set filesep "\n"
 set errorfmt "\033[31m%s\033[0m"
-
+cmd open ${{
+    test -L $f && f=$(readlink -f $f)
+    case "$(file --mime-type "$f" -b)" in
+        text/*) nvim --server ~/.cache/nvim/server.pipe --remote $fx;;
+        audio/*) mpv --audio-display=no $f ;;
+        *) for f in $fx; do xdg-open $f > /dev/null 2> /dev/null & done;;
+    esac
+}}
 ${{
     w=$(tput cols)
     if [ $w -le 80 ]; then
@@ -228,7 +235,7 @@ map u unarchive
 map . set hidden!
 map p paste
 map P paste-async
-map f fzf_jump
+map / fzf_jump
 map x cut
 map X chmodx
 map y copy
